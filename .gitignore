@@ -1,0 +1,27 @@
+# Go
+/backend/bin/
+/backend/pkg/
+/backend/coverage.out
+/backend/*.exe
+/backend/*.test
+/backend/.env
+/backend/.DS_Store
+
+# Go modules
+/backend/vendor/
+
+# React
+/frontend/node_modules/
+/frontend/build/
+/frontend/.env
+/frontend/.DS_Store
+
+# Logs
+*.log
+
+# OS generated
+.DS_Store
+Thumbs.db
+
+# IDEs and editors
+.vscode/
