@@ -1,0 +1,516 @@
+<title>Half Gold</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Yatra+One&family=Hind:wght@400;500;600&display=swap">
+<style>
+/* Layout: one monsoon-night stage, captions under it like subtitles, the source note below. Single dark world by design. */
+:root {
+  --night: #110e22;
+  --panel: #1b1733;
+  --line: #2f2852;
+  --ink: #f3ead7;
+  --muted: #a89fc0;
+  --turmeric: #f2b134;
+  --display: "Yatra One", "Georgia", serif;
+  --body: "Hind", "Segoe UI", system-ui, sans-serif;
+  color-scheme: dark;
+}
+html, body { background: var(--night); color: var(--ink); }
+body { font-family: var(--body); font-size: 16px; line-height: 1.55; }
+.wrap {
+  max-width: 1040px; margin: 0 auto;
+  padding-block: 28px 56px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; gap: 18px;
+}
+header { display: grid; gap: 4px; }
+.eyebrow { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+h1 { font-family: var(--display); font-weight: 400; font-size: clamp(36px, 6vw, 56px); line-height: 1.05; margin: 0; color: var(--turmeric); text-wrap: balance; }
+.sub { margin: 0; color: var(--muted); max-width: 60ch; }
+
+#stage { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; max-width: 100%; border-radius: 10px; background: #0d0b1f; border: 1px solid var(--line); }
+
+.captions { min-height: 7.5em; display: grid; gap: 4px; align-content: start; max-width: 70ch; }
+.captions p { margin: 0; font-size: 18px; color: var(--muted); transition: opacity .6s, color .6s; }
+.captions p.off { opacity: 0; }
+.captions p.now { color: var(--ink); }
+
+.controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.btn { font: 500 15px var(--body); color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 8px 16px; cursor: pointer; display: inline-flex; gap: 8px; align-items: center; }
+.btn:hover { border-color: var(--turmeric); }
+.btn:focus-visible, .chip:focus-visible { outline: 2px solid var(--turmeric); outline-offset: 2px; }
+.btn.primary { background: var(--turmeric); color: var(--night); border-color: var(--turmeric); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; flex: 1 1 320px; min-width: 0; }
+.chip { font: 400 13px var(--body); color: var(--muted); background: none; border: 1px solid var(--line); border-radius: 6px; padding: 4px 9px; cursor: pointer; }
+.chip[aria-current="true"] { color: var(--night); background: var(--ink); border-color: var(--ink); }
+.bar { height: 3px; background: var(--line); border-radius: 2px; overflow: hidden; }
+.bar span { display: block; height: 100%; width: 0; background: var(--turmeric); }
+
+.about { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 28px; border-top: 1px solid var(--line); padding-top: 22px; margin-top: 8px; }
+.about > div { min-width: 0; }
+.about h2 { font-family: var(--display); font-weight: 400; font-size: 22px; margin: 0 0 6px; color: var(--ink); }
+.about p { margin: 0 0 10px; color: var(--muted); max-width: 62ch; }
+
+/* stage animation */
+.roll, .bloom, .glint, .burst { transform-box: fill-box; }
+.paused * { animation-play-state: paused !important; }
+.walk { animation: walk var(--dur, 4s) cubic-bezier(.3,.6,.4,1) var(--delay, 0s) both; }
+@keyframes walk { from { transform: translateX(var(--from, -600px)); } to { transform: none; } }
+.roll { transform-origin: center; animation: roll var(--dur, 1.2s) ease-in-out var(--delay, 0s) both; }
+@keyframes roll { from { transform: rotate(0); } to { transform: rotate(var(--turn, 360deg)); } }
+.give { animation: give 1.2s ease-in-out var(--delay, 0s) both; }
+@keyframes give { from { transform: none; } to { transform: translate(var(--dx), var(--dy)); } }
+.fadeup { animation: fadeup 1.4s ease-out var(--delay, 0s) both; }
+@keyframes fadeup { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.ascend { animation: ascend 3.2s ease-in var(--delay, 0s) both; }
+@keyframes ascend { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(-140px); } }
+.bloom { transform-origin: center; animation: bloom 4.5s ease-out var(--delay, 0s) both; }
+@keyframes bloom { from { opacity: 0; transform: scale(.04); } 25% { opacity: 1; } to { opacity: 1; transform: scale(1); } }
+.wash { animation: wash 4s ease-in var(--delay, 0s) both; }
+@keyframes wash { from { opacity: 0; } to { opacity: .3; } }
+.swing { transform-box: view-box; transform-origin: 480px 0; animation: swing 3.4s ease-in-out infinite alternate; }
+@keyframes swing { from { transform: rotate(-4deg); } to { transform: rotate(4deg); } }
+.rain { animation: rain .42s linear infinite; }
+@keyframes rain { from { transform: translateY(0); } to { transform: translateY(40px); } }
+.twinkle { animation: twinkle 2.6s ease-in-out var(--delay, 0s) infinite alternate; }
+@keyframes twinkle { from { opacity: .25; } to { opacity: 1; } }
+.flash { opacity: 0; animation: flash 3.4s linear var(--delay, 0s) infinite; }
+@keyframes flash { 0%, 90% { opacity: 0; } 93% { opacity: 1; } 100% { opacity: 0; } }
+.steam { animation: steam 2.8s ease-out var(--delay, 0s) infinite; }
+@keyframes steam { from { opacity: .7; transform: translateY(0); } to { opacity: 0; transform: translateY(-36px); } }
+.shimmer { animation: shimmer 3s ease-in-out infinite; }
+@keyframes shimmer { 0%, 100% { filter: brightness(1); } 50% { filter: brightness(1.35); } }
+.glint { transform-origin: center; animation: glint 1.6s ease-out var(--delay, 0s) both; }
+@keyframes glint { from { opacity: 0; transform: scale(.1) rotate(0); } 60% { opacity: 1; transform: scale(1.6) rotate(45deg); } to { opacity: 1; transform: scale(1) rotate(90deg); } }
+.burst { transform-origin: center; animation: burst 1.4s ease-out var(--delay, 0s) both; }
+@keyframes burst { from { opacity: 0; transform: scale(.2); } 30% { opacity: 1; } to { opacity: 0; transform: scale(2.2); } }
+
+@media (prefers-reduced-motion: reduce) {
+  #stage * { animation-duration: .001ms !important; animation-delay: 0s !important; animation-iteration-count: 1 !important; }
+  .captions p { transition: none; }
+}
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">FableForge · story 01</span>
+    <h1>Half Gold</h1>
+    <p class="sub">The golden mongoose of the Mahabharata, retold for a Mumbai monsoon.</p>
+  </header>
+
+  <svg id="stage" viewBox="0 0 960 540" role="img" aria-labelledby="sceneName">
+    <title id="sceneName">Half Gold</title>
+    <defs>
+      <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#fff1b8"/><stop offset=".45" stop-color="#f2b134"/><stop offset="1" stop-color="#b97a0c"/>
+      </linearGradient>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#0b0a1c"/><stop offset="1" stop-color="#2b1c3e"/>
+      </linearGradient>
+      <linearGradient id="hall" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#1a1230"/><stop offset="1" stop-color="#3d1f3f"/>
+      </linearGradient>
+      <linearGradient id="spot" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#fff6dc" stop-opacity=".05"/><stop offset="1" stop-color="#fff6dc" stop-opacity=".28"/>
+      </linearGradient>
+      <radialGradient id="lamp"><stop offset="0" stop-color="#ffd27a" stop-opacity=".45"/><stop offset="1" stop-color="#ffd27a" stop-opacity="0"/></radialGradient>
+      <radialGradient id="halo"><stop offset="0" stop-color="#fff6d6"/><stop offset=".35" stop-color="#f2b134" stop-opacity=".8"/><stop offset="1" stop-color="#f2b134" stop-opacity="0"/></radialGradient>
+      <radialGradient id="moonGlow"><stop offset="0" stop-color="#f6e7c1" stop-opacity=".35"/><stop offset="1" stop-color="#f6e7c1" stop-opacity="0"/></radialGradient>
+      <clipPath id="win"><rect x="110" y="110" width="170" height="140"/></clipPath>
+    </defs>
+    <g id="scene"></g>
+  </svg>
+
+  <div class="bar" aria-hidden="true"><span id="bar"></span></div>
+
+  <div class="captions" id="captions" aria-live="polite"></div>
+
+  <div class="controls">
+    <button class="btn" id="prev" aria-label="Previous scene">&#9664;</button>
+    <button class="btn primary" id="play">Pause</button>
+    <button class="btn" id="next" aria-label="Next scene">&#9654;</button>
+    <nav class="chips" id="chips" aria-label="Scenes"></nav>
+  </div>
+
+  <section class="about">
+    <div>
+      <h2>The original</h2>
+      <p>In the Ashvamedhika Parva, after Yudhishthira's great horse sacrifice, a mongoose with half its body turned to gold arrives and says the whole ceremony is not worth a little barley flour.</p>
+      <p>Years before, in a famine at Kurukshetra, a poor gleaner, his wife, his son and his son's wife gave their last meal to a hungry guest, who turned out to be Dharma. The mongoose rolled in the spilled flour and half of it turned to gold. It has visited every great sacrifice since, hoping to turn the other half.</p>
+    </div>
+    <div>
+      <h2>This retelling</h2>
+      <p>The sacrifice becomes a televised charity gala. The famine becomes a week of monsoon flooding that stops a delivery rider's wages. The guest knocks wearing a rain-soaked helmet.</p>
+      <p>The ending is new. The mongoose finds one more gift where nobody is counting. The Mahabharata is public domain; the words and pictures here are original.</p>
+    </div>
+  </section>
+</div>
+
+<script>
+(() => {
+  const svg = document.getElementById('stage');
+  const sceneG = document.getElementById('scene');
+  const capEl = document.getElementById('captions');
+  const chipsEl = document.getElementById('chips');
+  const barEl = document.getElementById('bar');
+  const playBtn = document.getElementById('play');
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ---------- drawing helpers ----------
+  let uid = 0;
+  const brown = '#7d5b3b', brownDark = '#5a3f28';
+
+  function rng(seed) {
+    return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+  }
+
+  // Original character: a grey-brown Indian mongoose in profile, facing right. Origin at its feet.
+  function mongoose({ x, y, s = 1, gold = 0.5, goldFrom = null, goldBegin = '0s', glint = null }) {
+    const id = 'mg' + (uid++);
+    const span = 206, front = 84;
+    const split = front - gold * span;
+    const start = goldFrom == null ? split : front - goldFrom * span;
+    const parts = (fill, dark) => `
+      <path d="M-36,-26 Q-78,-22 -98,-6 Q-112,6 -120,-8" fill="none" stroke="${fill}" stroke-width="11" stroke-linecap="round"/>
+      <rect x="-30" y="-20" width="7" height="20" rx="3" fill="${dark}"/>
+      <rect x="16" y="-20" width="7" height="20" rx="3" fill="${dark}"/>
+      <rect x="-16" y="-20" width="7" height="20" rx="3" fill="${fill}"/>
+      <rect x="30" y="-20" width="7" height="20" rx="3" fill="${fill}"/>
+      <ellipse cx="0" cy="-28" rx="46" ry="16" fill="${fill}"/>
+      <ellipse cx="48" cy="-36" rx="19" ry="13" fill="${fill}"/>
+      <path d="M60,-43 L85,-31 L60,-25 Z" fill="${fill}"/>
+      <circle cx="42" cy="-48" r="5.5" fill="${dark}"/>`;
+    const anim = goldFrom == null ? '' : `<animate attributeName="x" from="${start}" to="${split}" begin="${goldBegin}" dur="1.8s" fill="freeze"/>`;
+    const glintSvg = glint == null ? '' : `<g class="glint" style="--delay:${glint}"><path d="M-40,-50 l3,8 8,3 -8,3 -3,8 -3,-8 -8,-3 8,-3z" fill="#ffe9a8"/></g>`;
+    return `<g transform="translate(${x},${y}) scale(${s})">
+      <clipPath id="${id}"><rect x="${start}" y="-80" width="260" height="100">${anim}</rect></clipPath>
+      ${parts(brown, brownDark)}
+      <g clip-path="url(#${id})"><g class="shimmer">${parts('url(#gold)', '#b07a10')}</g></g>
+      <circle cx="56" cy="-39" r="2.4" fill="#120c08"/><circle cx="84" cy="-31" r="2.6" fill="#120c08"/>
+      ${glintSvg}
+    </g>`;
+  }
+
+  function person({ x, y, s = 1, shirt, lower = '#2a2533', skin = '#9a6744', hair = '#1a120d', female = false, helmet = false, pack = false, reach = false }) {
+    const legs = female
+      ? `<path d="M-17,-44 L17,-44 L23,0 L-23,0 Z" fill="${lower}"/>`
+      : `<rect x="-14" y="-44" width="11" height="44" rx="4" fill="${lower}"/><rect x="3" y="-44" width="11" height="44" rx="4" fill="${lower}"/>`;
+    const armR = reach
+      ? `<g transform="rotate(-72 18 -90)"><rect x="14" y="-94" width="9" height="44" rx="4.5" fill="${shirt}"/><circle cx="18.5" cy="-48" r="5" fill="${skin}"/></g>`
+      : `<rect x="17" y="-94" width="9" height="46" rx="4.5" fill="${shirt}"/><circle cx="21.5" cy="-46" r="5" fill="${skin}"/>`;
+    const head = helmet
+      ? `<path d="M-18,-112 A18,18 0 0 1 18,-112 Z" fill="#d9483a"/><rect x="2" y="-117" width="17" height="7" rx="2" fill="#262634"/>`
+      : `<path d="M-15.5,-114 A15.5,15.5 0 0 1 15.5,-114 Z" fill="${hair}"/>` + (female ? `<circle cx="-15" cy="-116" r="7" fill="${hair}"/>` : '');
+    return `<g transform="translate(${x},${y}) scale(${s})">
+      ${pack ? `<rect x="-34" y="-104" width="28" height="42" rx="4" fill="#1f8a7a"/><rect x="-30" y="-96" width="20" height="4" fill="#15675b"/>` : ''}
+      ${legs}
+      <rect x="-26" y="-94" width="9" height="46" rx="4.5" fill="${shirt}"/><circle cx="-21.5" cy="-46" r="5" fill="${skin}"/>
+      <rect x="-18" y="-98" width="36" height="58" rx="12" fill="${shirt}"/>
+      ${female ? `<path d="M-18,-96 L18,-60 L18,-46 L-18,-84 Z" fill="${lower}" opacity=".85"/>` : ''}
+      ${armR}
+      <rect x="-5" y="-104" width="10" height="8" fill="${skin}"/>
+      <circle cx="0" cy="-114" r="15" fill="${skin}"/>
+      <circle cx="7" cy="-115" r="1.6" fill="#120c08"/>
+      ${head}
+    </g>`;
+  }
+
+  const roti = (x, y, s = 1) => `<g transform="translate(${x},${y}) scale(${s})"><ellipse rx="16" ry="6" fill="#d9a560"/><circle cx="-5" cy="-1" r="1.6" fill="#8a5a2a"/><circle cx="6" cy="1" r="1.3" fill="#8a5a2a"/><circle cx="1" cy="-2" r="1" fill="#8a5a2a"/></g>`;
+
+  function rainLines(x0, x1, y0, y1, seed) {
+    const r = rng(seed); let out = '';
+    for (let x = x0; x < x1; x += 11) {
+      const off = r() * 40;
+      for (let y = y0 - 40; y < y1; y += 40) out += `<line x1="${x}" y1="${y + off}" x2="${x - 4}" y2="${y + off + 14}" stroke="#7f94c8" stroke-width="1.4" stroke-opacity=".7"/>`;
+    }
+    return out;
+  }
+
+  function room({ door = 'closed', lit = true } = {}) {
+    const doorSvg = door === 'open'
+      ? `<rect x="830" y="250" width="90" height="220" fill="#0b0f22"/>
+         <g clip-path="none">${rainLines(834, 918, 250, 470, 7).replace(/<line/g, '<line class="rain"')}</g>
+         <polygon points="830,250 846,262 846,462 830,470" fill="#4b3a62"/>`
+      : `<rect x="830" y="250" width="90" height="220" fill="#4b3a62"/><rect x="838" y="260" width="74" height="96" fill="#55436e"/><rect x="838" y="366" width="74" height="96" fill="#55436e"/><circle cx="906" cy="365" r="4" fill="#c9a24a"/>`;
+    return `
+      <rect width="960" height="470" fill="#2a2140"/>
+      <rect y="0" width="960" height="26" fill="#3a3348"/>
+      <path d="M0,26 L960,26" stroke="#54496a" stroke-width="3"/>
+      <rect x="330" y="150" width="62" height="78" fill="#efe4cc"/><rect x="330" y="150" width="62" height="18" fill="#c0392b"/>
+      <g fill="#cfd3dc"><circle cx="640" cy="200" r="13"/><circle cx="672" cy="200" r="10"/><circle cx="700" cy="200" r="13"/></g>
+      <rect x="620" y="214" width="110" height="6" fill="#5b4a3a"/>
+      <rect x="100" y="100" width="190" height="160" fill="#5b4a3a"/>
+      <rect x="110" y="110" width="170" height="140" fill="#141a2e"/>
+      <g clip-path="url(#win)"><g class="rain">${rainLines(112, 290, 110, 260, 3)}</g></g>
+      <path d="M195,110 V250 M110,180 H280" stroke="#5b4a3a" stroke-width="5"/>
+      ${doorSvg}
+      <rect y="470" width="960" height="70" fill="#3a2c25"/>
+      <path d="M0,470 H960" stroke="#4a3a30" stroke-width="2"/>
+      <rect x="700" y="430" width="74" height="40" rx="4" fill="#4a4a55"/><ellipse cx="737" cy="428" rx="30" ry="6" fill="#26262e"/>
+      ${lit ? `<g class="swing"><line x1="480" y1="0" x2="480" y2="70" stroke="#222" stroke-width="2"/><circle cx="480" cy="140" r="150" fill="url(#lamp)"/><circle cx="480" cy="78" r="9" fill="#ffd27a"/></g>` : ''}
+    `;
+  }
+
+  const family = (extra = {}) => [
+    person({ x: 300, y: 470, s: 1.25, shirt: '#3f6fb5', ...extra.ravi }),
+    person({ x: 382, y: 470, s: 1.2, shirt: '#c0392b', lower: '#a83226', female: true, skin: '#a06d4a', ...extra.meena }),
+    person({ x: 462, y: 470, s: 1.25, shirt: '#2e8b57', skin: '#93603e', ...extra.arjun }),
+    person({ x: 540, y: 470, s: 1.18, shirt: '#8e44ad', lower: '#6f3488', female: true, skin: '#a87452', ...extra.kavya }),
+  ];
+
+  function hall({ dim = false } = {}) {
+    let s = `<rect width="960" height="540" fill="url(#hall)"/>`;
+    [200, 480, 760].forEach((cx, k) => {
+      s += `<line x1="${cx}" y1="0" x2="${cx}" y2="40" stroke="#6b5a3a" stroke-width="2"/>`;
+      for (let i = -3; i <= 3; i++) s += `<circle class="twinkle" style="--delay:${(i + 3) * .3 + k * .2}s" cx="${cx + i * 16}" cy="${54 + Math.abs(i) * 6}" r="${dim ? 2.5 : 4}" fill="#ffe2a0"/>`;
+    });
+    s += `<rect x="0" y="380" width="960" height="32" fill="#5a2a3a"/><rect x="0" y="412" width="960" height="40" fill="#3a1a28"/>`;
+    return s;
+  }
+
+  function crowd() {
+    let s = '';
+    [0, 1].forEach(row => {
+      for (let i = 0; i < 26; i++) {
+        const x = 10 + i * 38 + row * 19, y = 496 + row * 30;
+        s += `<ellipse cx="${x}" cy="${y + 34}" rx="24" ry="20" fill="${row ? '#07060f' : '#0c0a18'}"/><circle cx="${x}" cy="${y}" r="15" fill="${row ? '#07060f' : '#0c0a18'}"/>`;
+      }
+    });
+    return s;
+  }
+
+  const wrap = (cls, vars, inner) => `<g class="${cls}" style="${vars}">${inner}</g>`;
+
+  // ---------- scenes ----------
+  const scenes = [
+    {
+      name: 'Roof', dur: 9000,
+      lines: [[0, 'Mumbai, tonight. A mongoose sits on a hotel roof above Marine Drive, watching a party below.'],
+              [4000, 'One half of it is brown. The other half shines like a new coin.']],
+      draw() {
+        const r = rng(11); let s = `<rect width="960" height="540" fill="url(#sky)"/>
+          <circle cx="810" cy="92" r="110" fill="url(#moonGlow)"/><circle cx="810" cy="92" r="34" fill="#f6e7c1"/>`;
+        let x = -10;
+        while (x < 980) {
+          const w = 40 + r() * 55, h = 120 + r() * 170, top = 540 - h;
+          s += `<rect x="${x}" y="${top}" width="${w}" height="${h}" fill="${r() > .5 ? '#17132b' : '#1d1835'}"/>`;
+          for (let wy = top + 12; wy < 520; wy += 16) for (let wx = x + 6; wx < x + w - 8; wx += 12)
+            if (r() > .62) s += `<rect ${r() > .8 ? `class="twinkle" style="--delay:${(r() * 3).toFixed(2)}s"` : ''} x="${wx}" y="${wy}" width="4" height="6" fill="#f2b134" opacity="${(.35 + r() * .5).toFixed(2)}"/>`;
+          x += w + 4;
+        }
+        s += `<rect x="350" y="360" width="300" height="180" fill="#221c3c"/><rect x="340" y="352" width="320" height="10" fill="#2e2650"/>`;
+        for (let i = 0; i <= 30; i++) { const t = i / 30, px = 960 * t, py = 530 - 40 * Math.sin(Math.PI * t); s += `<circle cx="${px}" cy="${py}" r="2.4" fill="#ffe2a0"/>`; }
+        s += mongoose({ x: 500, y: 352, s: 1.4, gold: .5 });
+        s += `<text x="56" y="112" font-family="Yatra One, serif" font-size="64" fill="url(#gold)">Half Gold</text>
+              <text x="58" y="146" font-family="Hind, sans-serif" font-size="19" fill="#cfc5e0">a Mahabharata story, retold</text>`;
+        return s;
+      }
+    },
+    {
+      name: 'Gala', dur: 12000,
+      lines: [[0, "Downstairs, the Rajvansh Foundation's Giving Night is streaming live on four channels."],
+              [3500, 'The pledge counter climbs past five hundred crore. The room applauds itself.'],
+              [7200, 'Then a mongoose walks onto the stage and rolls across the marble.']],
+      draw() {
+        let s = hall();
+        s += `<rect x="300" y="110" width="360" height="120" rx="8" fill="#0f0c1d" stroke="#f2b134" stroke-width="2"/>
+              <text x="480" y="146" text-anchor="middle" font-family="Hind, sans-serif" font-size="15" letter-spacing="3" fill="#a89fc0">GIVING NIGHT · LIVE</text>
+              <text id="counter" x="480" y="200" text-anchor="middle" font-family="Hind, sans-serif" font-weight="600" font-size="36" fill="#f2b134">₹ 4,80,00,00,000</text>
+              <rect x="700" y="300" width="60" height="80" fill="#2a1420"/><rect x="694" y="294" width="72" height="10" fill="#4a2232"/>`;
+        s += wrap('walk', '--from:-640px;--dur:4s;--delay:4s', wrap('roll', '--delay:8.4s;--dur:1.3s', mongoose({ x: 470, y: 380, s: 1.1, gold: .5 })));
+        s += crowd();
+        const r = rng(5);
+        for (let i = 0; i < 8; i++) s += `<circle class="flash" style="--delay:${(r() * 3.4).toFixed(2)}s" cx="${40 + r() * 880}" cy="${470 + r() * 50}" r="10" fill="#ffffff"/>`;
+        return s;
+      },
+      tick(t) {
+        const el = document.getElementById('counter'); if (!el) return;
+        const v = 4800000000 + Math.min(1, t / 7000) * 324000000;
+        el.textContent = '₹ ' + (Math.round(v / 100000) * 100000).toLocaleString('en-IN');
+      }
+    },
+    {
+      name: 'One sentence', dur: 9000,
+      lines: [[0, 'It gets up, taps the microphone, and says one sentence.'],
+              [5000, 'Nobody laughs. Nobody knows where to look.']],
+      draw() {
+        return `<rect width="960" height="540" fill="#0c0a16"/>
+          <polygon points="420,0 520,0 650,470 310,470" fill="url(#spot)"/>
+          <ellipse cx="480" cy="470" rx="170" ry="16" fill="#fff6dc" opacity=".12"/>
+          <rect y="470" width="960" height="70" fill="#1a1222"/>
+          <line x1="600" y1="470" x2="600" y2="340" stroke="#888" stroke-width="4"/><line x1="600" y1="342" x2="580" y2="322" stroke="#888" stroke-width="4"/>
+          <ellipse cx="574" cy="316" rx="9" ry="13" fill="#3a3a44" transform="rotate(-40 574 316)"/>
+          ${mongoose({ x: 420, y: 470, s: 1.8, gold: .5 })}
+          ${wrap('fadeup', '--delay:2.2s', `<text x="480" y="108" text-anchor="middle" font-family="Yatra One, serif" font-size="40" fill="#f3ead7">“All of this is not worth</text>
+             <text x="480" y="160" text-anchor="middle" font-family="Yatra One, serif" font-size="40" fill="#f2b134">four rotis in Kurla.”</text>`)}`;
+      }
+    },
+    {
+      name: 'Monsoon', dur: 12500,
+      lines: [[0, 'Last monsoon. Kurla, a one-room home on the third floor of a chawl.'],
+              [3500, 'The rain has shut the city for six days. No orders on the delivery app means no wages.'],
+              [7500, "Ravi, his wife Meena, their son Arjun and Arjun's wife Kavya have one bag of atta left. It makes four rotis, one each."]],
+      draw() {
+        let s = room() + family().join('');
+        s += `<ellipse cx="620" cy="458" rx="36" ry="10" fill="#c9ccd6"/>`;
+        for (let i = 0; i < 4; i++) s += roti(620, 452 - i * 4);
+        s += `<g fill="none" stroke="#e8e0d0" stroke-width="2" stroke-linecap="round">
+          <path class="steam" style="--delay:0s" d="M610,432 q-6,-8 0,-16 q6,-8 0,-16"/>
+          <path class="steam" style="--delay:1.2s" d="M628,432 q-6,-8 0,-16 q6,-8 0,-16"/></g>`;
+        return s;
+      }
+    },
+    {
+      name: 'The knock', dur: 12500,
+      lines: [[0, 'There is a knock. A delivery rider stands in the doorway, soaked through, two days without food.'],
+              [2000, 'Ravi gives him his roti. The man is still hungry.'],
+              [4600, 'Meena gives hers. Then Arjun. Then Kavya.'],
+              [9400, 'Four plates, all empty. Nobody in the room complains.']],
+      draw() {
+        let s = room({ door: 'open' }) + family().join('');
+        s += person({ x: 872, y: 470, s: 1.22, shirt: '#55606e', skin: '#8f5d3d', helmet: true, pack: true });
+        s += `<ellipse cx="620" cy="458" rx="36" ry="10" fill="#c9ccd6"/>`;
+        [2, 4.6, 6.4, 8.2].forEach((d, i) => {
+          s += wrap('give', `--delay:${d}s;--dx:${232}px;--dy:${-36 - i * 5}px`, roti(620, 452 - i * 4));
+        });
+        return s;
+      }
+    },
+    {
+      name: 'Light', dur: 11500,
+      lines: [[0, 'The rider takes off his helmet, and the room fills with light.'],
+              [3200, '“I am Dharma,” he says. “I came to see who would share when there was nothing left to share.”'],
+              [7400, 'Then the light lifts all four of them out of the room, above the rain.']],
+      draw() {
+        let s = room({ door: 'open' });
+        s += `<circle class="bloom" style="--delay:.6s" cx="860" cy="360" r="620" fill="url(#halo)"/>`;
+        s += family({}).map((p, i) => wrap('ascend', `--delay:${6.8 + i * .4}s`, p)).join('');
+        s += person({ x: 872, y: 470, s: 1.22, shirt: '#f6e7c1', skin: '#c9935f', hair: '#2a1a10' });
+        s += `<rect class="wash" style="--delay:1s" width="960" height="540" fill="#f2b134"/>`;
+        return s;
+      }
+    },
+    {
+      name: 'Flour', dur: 11500,
+      lines: [[0, 'A little later, a mongoose slips in through the window, looking for crumbs.'],
+              [3600, 'There is only a dusting of flour on the floor. It rolls in it.'],
+              [6200, 'Everywhere the flour touched, its fur turns to gold.']],
+      draw() {
+        let s = room({ door: 'closed' });
+        const r = rng(9);
+        for (let i = 0; i < 70; i++) s += `<circle cx="${430 + r() * 190}" cy="${468 + r() * 10}" r="${(.8 + r() * 1.6).toFixed(1)}" fill="#efe6d0"/>`;
+        s += wrap('walk', '--from:-520px;--dur:3s;--delay:.4s', wrap('roll', '--delay:3.8s;--dur:1.8s;--turn:720deg', mongoose({ x: 520, y: 470, s: 1.25, gold: .5, goldFrom: 0, goldBegin: '5.8s' })));
+        for (let i = 0; i < 8; i++) { const a = i / 8 * Math.PI * 2; s += `<circle class="burst" style="--delay:5.8s" cx="${520 + Math.cos(a) * 70}" cy="${430 + Math.sin(a) * 40}" r="4" fill="#ffe9a8"/>`; }
+        return s;
+      }
+    },
+    {
+      name: 'Since then', dur: 13500,
+      lines: [[0, '“Since then I go wherever people give big,” the mongoose tells the gala. “Telethons, temple trusts, launch parties.”'],
+              [3400, '“I roll on every floor. The other half never changes.”'],
+              [6000, 'After the guests leave, a cleaner named Sunita sits on the stage steps, opens her tiffin, and tears her only roti in two.'],
+              [9600, 'She holds half out to the mongoose. On its brown side, one hair begins to shine.']],
+      draw() {
+        let s = hall({ dim: true });
+        s += `<rect x="300" y="110" width="360" height="120" rx="8" fill="#0f0c1d" stroke="#3a2c4a" stroke-width="2"/>
+              <text x="480" y="182" text-anchor="middle" font-family="Hind, sans-serif" font-size="26" letter-spacing="4" fill="#5c5170">THANK YOU</text>`;
+        const r = rng(21), cols = ['#f2b134', '#c0392b', '#2e8b57', '#3f6fb5', '#efe4cc'];
+        for (let i = 0; i < 60; i++) s += `<rect x="${r() * 960}" y="${452 + r() * 86}" width="6" height="3" fill="${cols[i % 5]}" transform="rotate(${Math.round(r() * 180)} ${r() * 960} ${470})"/>`;
+        for (let row = 0; row < 2; row++) for (let i = 0; i < 16; i++) { const x = 20 + i * 60 + row * 30, y = 476 + row * 34; s += `<rect x="${x}" y="${y}" width="28" height="6" fill="#241a2c"/><rect x="${x + 22}" y="${y - 22}" width="6" height="28" fill="#241a2c"/>`; }
+        s += person({ x: 650, y: 412, s: 1.1, shirt: '#2f8f9d', lower: '#246f7a', female: true, skin: '#94603f', reach: true });
+        s += `<g fill="#cfd3dc"><rect x="676" y="396" width="26" height="8" rx="2"/><rect x="676" y="388" width="26" height="8" rx="2"/></g>`;
+        s += wrap('give', '--delay:8.6s;--dx:-118px;--dy:46px', `<path d="M694,330 a14,6 0 0 1 28,0 z" fill="#d9a560"/>`);
+        s += wrap('walk', '--from:-560px;--dur:3.2s;--delay:5.6s', mongoose({ x: 500, y: 412, s: 1.1, gold: .5, glint: '10.2s' }));
+        return s;
+      }
+    },
+    {
+      name: 'End', dur: 9000,
+      lines: [[0, 'Half Gold. A modern retelling of the golden mongoose, from the Ashvamedhika Parva of the Mahabharata.'],
+              [3000, 'Words and pictures are original. The source text is in the public domain.']],
+      draw() {
+        return `<rect width="960" height="540" fill="url(#sky)"/>
+          ${mongoose({ x: 470, y: 330, s: 1.7, gold: .5, glint: '0.6s' })}
+          ${wrap('fadeup', '--delay:.4s', `<text x="480" y="420" text-anchor="middle" font-family="Yatra One, serif" font-size="52" fill="url(#gold)">Half Gold</text>
+            <text x="480" y="456" text-anchor="middle" font-family="Hind, sans-serif" font-size="18" fill="#a89fc0">after the Ashvamedhika Parva · FableForge</text>`)}`;
+      }
+    }
+  ];
+
+  // ---------- player ----------
+  let idx = 0, elapsed = 0, playing = !reduced, lastTs = null;
+
+  scenes.forEach((sc, i) => {
+    const b = document.createElement('button');
+    b.className = 'chip'; b.type = 'button'; b.textContent = sc.name;
+    b.addEventListener('click', () => go(i));
+    chipsEl.appendChild(b);
+  });
+
+  function setPlaying(p) {
+    playing = p;
+    svg.classList.toggle('paused', !p);
+    if (p) svg.unpauseAnimations(); else svg.pauseAnimations();
+    const atEnd = !p && idx === scenes.length - 1 && elapsed >= scenes[idx].dur;
+    playBtn.textContent = p ? 'Pause' : (atEnd ? 'Replay' : 'Play');
+  }
+
+  function go(i) {
+    idx = Math.max(0, Math.min(scenes.length - 1, i));
+    elapsed = 0; uid = 0;
+    const sc = scenes[idx];
+    sceneG.innerHTML = sc.draw();
+    svg.setCurrentTime(0);
+    if (reduced) { svg.setCurrentTime(999); if (sc.tick) sc.tick(1e9); }
+    else if (sc.tick) sc.tick(0);
+    document.getElementById('sceneName').textContent = 'Half Gold, scene: ' + sc.name;
+    capEl.innerHTML = sc.lines.map(([, text]) => `<p>${text}</p>`).join('');
+    [...chipsEl.children].forEach((c, k) => c.setAttribute('aria-current', k === idx ? 'true' : 'false'));
+    setPlaying(playing);
+    paint();
+  }
+
+  function paint() {
+    const sc = scenes[idx];
+    const ps = capEl.children;
+    let now = -1;
+    sc.lines.forEach(([t], k) => { const on = reduced || t <= elapsed; ps[k].classList.toggle('off', !on); if (on) now = k; });
+    [...ps].forEach((p, k) => p.classList.toggle('now', k === now));
+    barEl.style.width = (reduced ? 100 : Math.min(100, elapsed / sc.dur * 100)) + '%';
+  }
+
+  function frame(ts) {
+    if (lastTs == null) lastTs = ts;
+    const dt = Math.min(100, ts - lastTs); lastTs = ts;
+    if (playing) {
+      elapsed += dt;
+      const sc = scenes[idx];
+      if (sc.tick) sc.tick(elapsed);
+      if (elapsed >= sc.dur) {
+        if (idx < scenes.length - 1) go(idx + 1);
+        else { elapsed = sc.dur; setPlaying(false); }
+      }
+      paint();
+    }
+    requestAnimationFrame(frame);
+  }
+
+  playBtn.addEventListener('click', () => {
+    if (playBtn.textContent === 'Replay') { playing = true; go(0); return; }
+    setPlaying(!playing);
+  });
+  document.getElementById('prev').addEventListener('click', () => go(idx - 1));
+  document.getElementById('next').addEventListener('click', () => go(idx + 1));
+  document.addEventListener('keydown', e => {
+    if (e.target.closest('button') && (e.key === ' ' || e.key === 'Enter')) return;
+    if (e.key === ' ') { e.preventDefault(); playBtn.click(); }
+    if (e.key === 'ArrowRight') go(idx + 1);
+    if (e.key === 'ArrowLeft') go(idx - 1);
+  });
+
+  go(0);
+  requestAnimationFrame(frame);
+})();
+</script>
