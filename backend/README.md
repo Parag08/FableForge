@@ -1,51 +1,34 @@
-# Go Backend Project
+# FableForge backend
 
-This is the backend part of the Go-React project. It is built using Go and serves as the API for the frontend React application.
+Go HTTP service for FableForge. See the [repository README](../README.md) for
+the project overview and roadmap. API contract: [`swagger.yml`](swagger.yml).
 
-## Getting Started
+## Endpoints
 
-To get started with the backend, follow these steps:
+- `GET /healthz` — liveness check, returns `{"status":"ok"}`.
+- `POST /login` — JSON `{"username","password"}`; checks the demo account from
+  env and sets an HttpOnly `token` cookie (HS256 JWT, lifetime `TOKEN_TTL`).
 
-### Prerequisites
+## Configuration
 
-- Go 1.16 or later installed on your machine.
-- A working Go environment.
+All settings come from environment variables; there are no in-code defaults.
+The server exits at startup listing every missing or invalid key
+(`internal/config`). See [`.env.example`](.env.example).
 
-### Installation
+| Key | Meaning |
+| --- | --- |
+| `PORT` | Listen port |
+| `JWT_SECRET` | HMAC secret for JWTs, at least 32 characters |
+| `TOKEN_TTL` | Token lifetime as a Go duration (e.g. `15m`) |
+| `ALLOWED_ORIGIN` | Frontend origin allowed by CORS (e.g. `http://localhost:3000`) |
+| `DEMO_USERNAME` / `DEMO_PASSWORD` | The single demo login (placeholder until real user storage exists) |
 
-1. Clone the repository:
-   ```
-   git clone <repository-url>
-   cd go-react-project/backend
-   ```
+## Run and test
 
-2. Install the dependencies:
-   ```
-   go mod tidy
-   ```
+```sh
+cp .env.example .env              # then fill in JWT_SECRET and DEMO_PASSWORD
+set -a; . ./.env; set +a          # export the variables into the shell
+go run .
 
-### Running the Server
-
-To run the Go server, execute the following command in the `backend` directory:
-
+go vet ./... && go test ./...
 ```
-go run main.go
-```
-
-The server will start on `http://localhost:8080` by default.
-
-### API Endpoints
-
-- **GET /api/example**: This is an example endpoint that returns a sample response.
-
-### Testing
-
-You can test the API using tools like Postman or curl.
-
-### Contributing
-
-If you wish to contribute to the backend, please fork the repository and submit a pull request.
-
-### License
-
-This project is licensed under the MIT License. See the LICENSE file for details.

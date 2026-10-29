@@ -1,23 +1,24 @@
+# Environment files (keep the committed examples)
+.env
+.env.*
+!.env.example
+
 # Go
 /backend/bin/
 /backend/pkg/
 /backend/coverage.out
 /backend/*.exe
 /backend/*.test
-/backend/.env
-/backend/.DS_Store
-
-# Go modules
 /backend/vendor/
 
-# React
-/frontend/node_modules/
+# Node / React
+node_modules/
 /frontend/build/
-/frontend/.env
-/frontend/.DS_Store
+/frontend/coverage/
 
 # Logs
 *.log
+npm-debug.log*
 
 # OS generated
 .DS_Store
@@ -25,3 +26,4 @@ Thumbs.db
 
 # IDEs and editors
 .vscode/
+.idea/
