@@ -1,66 +1,62 @@
 import React from "react";
 
-const ebooks = [
+// PLACEHOLDER: static mock of the planned pipeline. Nothing here is wired to
+// the backend yet; see the roadmap in the repository README.
+const pipelineSteps = [
   {
-    title: "The Art of Go",
-    author: "Jane Doe",
-    cover: "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=200&q=80",
-    description: "A comprehensive guide to mastering the Go programming language.",
+    title: "1. Upload a chapter",
+    description: "Paste or upload a chapter of your novel as plain text.",
   },
   {
-    title: "React in Action",
-    author: "John Smith",
-    cover: "https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?auto=format&fit=crop&w=200&q=80",
-    description: "Learn React from scratch with hands-on projects and best practices.",
+    title: "2. Scenes + character bible",
+    description:
+      "The chapter is split into illustratable scenes, and recurring characters are described once in a shared character bible.",
   },
   {
-    title: "Fullstack Fundamentals",
-    author: "Alex Johnson",
-    cover: "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=200&q=80",
-    description: "Everything you need to know to build modern web applications.",
+    title: "3. Consistent illustrations",
+    description:
+      "Each scene is illustrated using the character bible so faces, outfits and settings stay consistent across images.",
+  },
+  {
+    title: "4. Export EPUB",
+    description: "Text and illustrations are assembled into an illustrated EPUB.",
   },
 ];
 
 function Home() {
   return (
     <div style={{ padding: "2rem", background: "#f7f7f7", minHeight: "100vh" }}>
-      <h1 style={{ textAlign: "center", marginBottom: "2rem" }}>📚 FableForge eBooks</h1>
-      <div style={{
-        display: "flex",
-        flexWrap: "wrap",
-        gap: "2rem",
-        justifyContent: "center"
-      }}>
-        {ebooks.map((book, idx) => (
-          <div key={idx} style={{
-            background: "#fff",
-            borderRadius: "12px",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-            width: "250px",
-            padding: "1rem",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center"
-          }}>
-            <img
-              src={book.cover}
-              alt={book.title}
-              style={{ width: "120px", height: "160px", objectFit: "cover", borderRadius: "8px", marginBottom: "1rem" }}
-            />
-            <h2 style={{ fontSize: "1.2rem", margin: "0.5rem 0" }}>{book.title}</h2>
-            <p style={{ color: "#555", margin: "0.25rem 0 0.5rem 0" }}>by {book.author}</p>
-            <p style={{ fontSize: "0.95rem", color: "#777", textAlign: "center" }}>{book.description}</p>
-            <button style={{
-              marginTop: "1rem",
-              padding: "0.5rem 1.5rem",
-              background: "#1976d2",
-              color: "#fff",
-              border: "none",
-              borderRadius: "6px",
-              cursor: "pointer"
-            }}>
-              Read Now
-            </button>
+      <h1 style={{ textAlign: "center", marginBottom: "0.5rem" }}>FableForge</h1>
+      <p style={{ textAlign: "center", color: "#555", marginBottom: "0.5rem" }}>
+        Turn a novel into a consistently illustrated book.
+      </p>
+      <p
+        style={{
+          textAlign: "center",
+          color: "#8a5a00",
+          background: "#fff4d6",
+          borderRadius: "6px",
+          padding: "0.5rem",
+          maxWidth: "560px",
+          margin: "0 auto 2rem auto",
+        }}
+      >
+        Placeholder: this page previews the planned workflow. None of these steps are implemented yet.
+      </p>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "1.5rem", justifyContent: "center" }}>
+        {pipelineSteps.map((step) => (
+          <div
+            key={step.title}
+            style={{
+              background: "#fff",
+              borderRadius: "12px",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+              width: "240px",
+              padding: "1rem",
+            }}
+          >
+            <h2 style={{ fontSize: "1.1rem", margin: "0.25rem 0 0.75rem 0" }}>{step.title}</h2>
+            <p style={{ fontSize: "0.95rem", color: "#666", margin: 0 }}>{step.description}</p>
           </div>
         ))}
       </div>

@@ -1,7 +1,5 @@
-module go-react-project
+module fableforge
 
-go 1.18
+go 1.22
 
-require (
-    github.com/gin-gonic/gin v1.7.4
-)
+require github.com/golang-jwt/jwt/v5 v5.3.1
