@@ -1,50 +1,26 @@
-# Frontend README.md
+# FableForge frontend
 
-# Frontend of Go React Project
+React (Create React App / `react-scripts`) UI for FableForge. See the
+[repository README](../README.md) for the project overview and roadmap.
 
-This is the frontend part of the Go React Project. It is built using React and serves as the user interface for the application.
+Current state: a Google sign-in landing page (`src/pages/Landing.jsx`) and a
+placeholder home page (`src/pages/Home.jsx`) that previews the planned
+chapter-to-illustrated-EPUB workflow. The UI does not call the backend yet.
 
-## Getting Started
+## Setup
 
-To get started with the frontend, follow these steps:
-
-1. **Clone the repository:**
-   ```
-   git clone <repository-url>
-   cd go-react-project/frontend
-   ```
-
-2. **Install dependencies:**
-   ```
-   npm install
-   ```
-
-3. **Run the application:**
-   ```
-   npm start
-   ```
-
-   This will start the development server and open the application in your default web browser.
-
-## Building for Production
-
-To create a production build of the application, run:
-```
-npm run build
+```sh
+cp .env.example .env        # set REACT_APP_GOOGLE_CLIENT_ID
+npm install
+npm start                   # dev server on http://localhost:3000
+npm run build               # production build into build/
 ```
 
-This will generate a `build` directory with the optimized production files.
+## Environment
 
-## Folder Structure
+| Key | Purpose |
+| --- | --- |
+| `REACT_APP_GOOGLE_CLIENT_ID` | Google OAuth client ID for the sign-in button on the landing page |
 
-- `src/`: Contains the source code for the React application.
-- `public/`: Contains the static files, including `index.html`.
-- `package.json`: Contains the project metadata and dependencies.
-
-## Contributing
-
-If you would like to contribute to this project, please fork the repository and submit a pull request.
-
-## License
-
-This project is licensed under the MIT License. See the LICENSE file for details.
+Note: the landing page currently navigates to `/home` on any successful Google
+sign-in; the credential is not yet verified by the backend.

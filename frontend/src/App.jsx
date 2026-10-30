@@ -1,5 +1,5 @@
 import React from "react";
-import Login, { LandingPage } from "./pages/Landing";
+import { LandingPage } from "./pages/Landing";
 import Home from "./pages/Home";
 import { HashRouter, Route, Routes } from "react-router-dom";
 
